@@ -1,4 +1,4 @@
-# OpenAI-Translator
+# LLM-Translator-v1.0
 
 <p align="center">
     <br> English | <a href="README-CN.md">中文</a>
