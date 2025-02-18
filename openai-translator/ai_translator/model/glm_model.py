@@ -15,7 +15,7 @@ from ai_translator.model.model import Model
 class GLMModel(Model):
     def __init__(self):
         load_dotenv()
-        self.client = ZhipuAI(api_key=os.getenv("ZHIPUAI_API_KEY"))
+        self.client = ZhipuAI(api_key=os.getenv("CHATGLM_API_KEY"))
 
     def make_request(self, prompt):
         try:
