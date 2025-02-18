@@ -1,30 +1,37 @@
-import requests
-import simplejson
-import time
 import os
+import sys
+import time
 import openai
-
-from model import Model
-from utils import LOG
+from pathlib import Path
+from dotenv import load_dotenv
 from openai import OpenAI
 
+# 添加父目录到系统路径
+root_dir = str(Path(__file__).resolve().parents[2])
+if root_dir not in sys.path:
+    sys.path.append(root_dir)
+
+from ai_translator.model.model import Model
+from ai_translator.utils import LOG
+
 class OpenAIModel(Model):
-    def __init__(self, model: str, api_key: str):
-        self.model = model
+    def __init__(self):
+        load_dotenv()
         self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        self.model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+        self.max_retries = 3
+        self.retry_delay = 60
 
     def make_request(self, prompt):
         attempts = 0
-        while attempts < 3:
+        while attempts < self.max_retries:
             try:
                 if self.model == "gpt-3.5-turbo":
                     response = self.client.chat.completions.create(
                         model=self.model,
-                        messages=[
-                            {"role": "user", "content": prompt}
-                        ]
+                        messages=[{"role": "user", "content": prompt}]
                     )
-                    translation = response.choices[0].message.content.strip()
+                    return response.choices[0].message.content.strip(), True
                 else:
                     response = self.client.completions.create(
                         model=self.model,
@@ -32,23 +39,28 @@ class OpenAIModel(Model):
                         max_tokens=150,
                         temperature=0
                     )
-                    translation = response.choices[0].text.strip()
+                    return response.choices[0].text.strip(), True
 
-                return translation, True
             except openai.RateLimitError as e:
                 attempts += 1
-                if attempts < 3:
-                    LOG.warning("Rate limit reached. Waiting for 60 seconds before retrying.")
-                    time.sleep(60)
+                if attempts < self.max_retries:
+                    LOG.warning(f"速率限制达到，等待 {self.retry_delay} 秒后重试。")
+                    time.sleep(self.retry_delay)
                 else:
-                    raise Exception("Rate limit reached. Maximum attempts exceeded.")
+                    raise Exception("达到速率限制。超过最大重试次数。")
+
             except openai.APIConnectionError as e:
-                print("The server could not be reached")
-                print(e.__cause__)  # an underlying Exception, likely raised within httpx.            except requests.exceptions.Timeout as e:
+                raise Exception(f"无法连接到服务器: {e.__cause__}")
+
             except openai.APIStatusError as e:
-                print("Another non-200-range status code was received")
-                print(e.status_code)
-                print(e.response)
+                raise Exception(f"API 返回非 200 状态码: {e.status_code}, 响应: {e.response}")
+
             except Exception as e:
-                raise Exception(f"发生了未知错误：{e}")
+                raise Exception(f"发生未知错误: {e}")
+
         return "", False
+
+if __name__ == '__main__':
+    model = OpenAIModel()
+    response, success = model.make_request("你好")
+    print(f"响应: {response}\n成功: {success}")
