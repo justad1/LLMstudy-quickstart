@@ -1,9 +1,13 @@
-openai==1.14.2
+openai
 pdfplumber
 simplejson
 requests
-PyYAML
+python-dotenv
 pillow
 reportlab
 pandas
 loguru
+pathlib
+zhipuai
+dashscope
+tqdm

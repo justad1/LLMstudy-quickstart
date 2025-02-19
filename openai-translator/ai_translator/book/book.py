@@ -1,4 +1,4 @@
-from .page import Page
+from ai_translator.book.page import Page
 
 
 # Book类

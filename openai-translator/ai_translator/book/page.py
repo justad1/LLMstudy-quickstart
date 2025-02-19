@@ -1,4 +1,4 @@
-from .content import Content
+from ai_translator.book.content import Content
 
 # Page
 # 用于存储页面内容

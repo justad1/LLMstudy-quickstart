@@ -2,7 +2,7 @@
 import pandas as pd
 from enum import Enum, auto
 from PIL import Image as PILImage
-from ..utils import LOG
+from ai_translator.utils import LOG
 
 # 定义内容类型枚举
 class ContentType(Enum):

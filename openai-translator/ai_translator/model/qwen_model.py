@@ -12,7 +12,7 @@ from ai_translator.model.model import Model
 from dashscope import Generation
 from dashscope.api_entities.dashscope_response import GenerationResponse
 
-class QWenModel(Model):
+class QwenModel(Model):
     def __init__(self):
         load_dotenv()
         self.api_key = os.getenv("DASHSCOPE_API_KEY")

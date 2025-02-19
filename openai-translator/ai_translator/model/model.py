@@ -1,4 +1,4 @@
-from ..book import ContentType
+from ai_translator.book.content import ContentType
 
 class Model:
     def make_text_prompt(self, text: str, target_language: str) -> str:
@@ -16,3 +16,6 @@ class Model:
 
     def make_request(self, prompt):
         raise NotImplementedError("子类必须实现 make_request 方法")
+    
+
+
