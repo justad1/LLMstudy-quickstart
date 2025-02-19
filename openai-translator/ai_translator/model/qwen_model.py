@@ -32,7 +32,3 @@ class QWenModel(Model):
         except Exception as e:
             raise Exception(f"发生未知错误: {e}")
 
-if __name__ == '__main__':
-    model = QWenModel()
-    response, success = model.make_request("你好")
-    print(f"响应: {response}\n成功: {success}")

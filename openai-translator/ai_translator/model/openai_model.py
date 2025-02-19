@@ -60,7 +60,4 @@ class OpenAIModel(Model):
 
         return "", False
 
-if __name__ == '__main__':
-    model = OpenAIModel()
-    response, success = model.make_request("你好")
-    print(f"响应: {response}\n成功: {success}")
+

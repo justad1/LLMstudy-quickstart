@@ -26,11 +26,11 @@ class Logger:
 # 创建Logger实例并暴露logger对象
 LOG = Logger(debug=True).logger
 
-if __name__ == "__main__":
-    # 测试日志功能
-    log = Logger().logger
+# if __name__ == "__main__":
+#     # 测试日志功能
+#     log = Logger().logger
 
-    log.debug("This is a debug message.")
-    log.info("This is an info message.")
-    log.warning("This is a warning message.")
-    log.error("This is an error message.")
+#     log.debug("This is a debug message.")
+#     log.info("This is an info message.")
+#     log.warning("This is a warning message.")
+#     log.error("This is an error message.")
