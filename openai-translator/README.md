@@ -31,7 +31,7 @@ AI-Translator 是一个强大的 AI 翻译工具，支持将英文 PDF 文档翻
   - 易于扩展和维护
 
 ### 开发计划
-- [ ] 用户界面优化
+- [x] 用户界面优化
   - 实现 Web 界面，提升易用性
   - 支持实时翻译进度显示
 - [ ] 功能扩展
@@ -124,11 +124,6 @@ python ai_translator/main.py --model kimi --book path/to/your.pdf
 
 ### 3. 运行
 
-配置完成后，直接运行:
-
-```bash
-python ai_translator/main.py
-```
 
 ### 3. Web 启动
 
@@ -138,7 +133,7 @@ python run_web.py
 ```
 
 访问地址：
-- 浏览器打开 `http://localhost:5000`
+- 浏览器打开 `http://localhost:6000`
 - 即可使用 AI 翻译 Web 界面
 
 注意事项：
