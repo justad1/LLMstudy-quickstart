@@ -26,7 +26,7 @@ def get_config():
         
         # Web应用配置
         'host': '0.0.0.0',
-        'port': 5000,
+        'port': 6000,
         'debug': True
     }
     
