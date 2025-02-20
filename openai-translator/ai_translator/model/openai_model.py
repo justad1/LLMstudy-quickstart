@@ -15,10 +15,9 @@ from ai_translator.model.model import Model
 from ai_translator.utils import LOG
 
 class OpenAIModel(Model):
-    def __init__(self):
-        load_dotenv()
-        self.client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
-        self.model = os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
+    def __init__(self, config=None):
+        self.client = OpenAI(api_key=config.get('openai_api_key') if config else os.getenv("OPENAI_API_KEY"))
+        self.model = config.get('openai_model', 'gpt-3.5-turbo') if config else os.getenv("OPENAI_MODEL", "gpt-3.5-turbo")
         self.max_retries = 3
         self.retry_delay = 60
 

@@ -9,5 +9,7 @@ pandas
 loguru
 pathlib
 zhipuai
+flask
+flask-cors
 dashscope
 tqdm

@@ -13,9 +13,8 @@ from dashscope import Generation
 from dashscope.api_entities.dashscope_response import GenerationResponse
 
 class QwenModel(Model):
-    def __init__(self):
-        load_dotenv()
-        self.api_key = os.getenv("DASHSCOPE_API_KEY")
+    def __init__(self, config=None):
+        self.api_key = config.get('dashscope_api_key') if config else os.getenv("DASHSCOPE_API_KEY")
 
     def make_request(self, prompt):
         try:

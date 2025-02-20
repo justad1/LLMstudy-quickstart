@@ -13,14 +13,13 @@ if root_dir not in sys.path:
 from ai_translator.model.model import Model
 
 class GLMModel(Model):
-    def __init__(self):
-        load_dotenv()
-        self.client = ZhipuAI(api_key=os.getenv("CHATGLM_API_KEY"))
+    def __init__(self, config=None):
+        self.client = ZhipuAI(api_key=config.get('glm_api_key') if config else os.getenv("CHATGLM_API_KEY"))
 
     def make_request(self, prompt):
         try:
             response = self.client.chat.completions.create(
-                model="glm-4",
+                model="glm-4-flash",
                 messages=[{"role": "user", "content": prompt}]
             )
             return response.choices[0].message.content, True

@@ -12,10 +12,9 @@ if root_dir not in sys.path:
 from ai_translator.model.model import Model
 
 class DeepseekModel(Model):
-    def __init__(self):
-        load_dotenv()
+    def __init__(self, config=None):
         self.client = OpenAI(
-            api_key=os.getenv("DEEPSEEK_API_KEY"),
+            api_key=config.get('deepseek_api_key') if config else os.getenv("DEEPSEEK_API_KEY"),
             base_url="https://api.deepseek.com"
         )
 

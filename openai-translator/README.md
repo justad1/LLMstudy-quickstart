@@ -77,14 +77,32 @@ GLM_API_KEY=your-glm-api-key
 DEEPSEEK_API_KEY=your-deepseek-api-key
 
 # Qwen API 配置
-QWEN_API_KEY=your-qwen-api-key
+DASHSCOPE_API_KEY=your-qwen-api-key
 
 # Moonshot (Kimi) API 配置
 MOONSHOT_API_KEY=your-moonshot-api-key
 ```
 
 #### 方式二：命令行参数
+1. 首先导入apikey到环境变量
+```bash
 
+echo "export OPENAI_API_KEY='YOUR_OPENAI_API_KEY'" >> ~/.bashrc
+echo "export CHATGLM_API_KEY='YOUR_CHATGLM_API_KEY'" >> ~/.bashrc
+echo "export DEEPSEEK_API_KEY='YOUR_DEEPSEEK_API_KEY'" >> ~/.bashrc
+echo "export DASHSCOPE_API_KEY='YOUR_DASHSCOPE_API_KEY'" >> ~/.bashrc
+echo "export MOONSHOT_API_KEY='YOUR_MOONSHOT_API_KEY'" >> ~/.bashrc
+
+source ~/.bashrc
+
+echo $OPENAI_API_KEY
+echo $CHATGLM_API_KEY
+echo $DEEPSEEK_API_KEY
+echo $DASHSCOPE_API_KEY
+echo $MOONSHOT_API_KEY
+``` 
+
+2. 使用方法
 ```bash
 # OpenAI 模型
 python ai_translator/main.py --model openai --book path/to/your.pdf
@@ -111,6 +129,22 @@ python ai_translator/main.py --model kimi --book path/to/your.pdf
 ```bash
 python ai_translator/main.py
 ```
+
+### 3. Web 启动
+
+启动 Web 服务器：
+```bash
+python run_web.py
+```
+
+访问地址：
+- 浏览器打开 `http://localhost:5000`
+- 即可使用 AI 翻译 Web 界面
+
+注意事项：
+- 确保已安装所有依赖
+- 需要提前配置 API Key
+- Web 界面支持文件上传和翻译
 
 ## 项目结构
 

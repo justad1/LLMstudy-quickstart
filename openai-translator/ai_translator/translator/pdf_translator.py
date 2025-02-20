@@ -60,15 +60,17 @@ class PDFTranslator:
         # 关闭进度条
         progress_bar.close()
 
-        # 创建输出目录
-        output_dir = os.path.join(os.path.dirname(os.path.dirname(pdf_file_path)), 'output')
-        os.makedirs(output_dir, exist_ok=True)
-        
         # 生成输出文件路径
         filename = os.path.basename(pdf_file_path)
         output_filename = os.path.splitext(filename)[0] + '_translated.pdf'
-        output_path = os.path.join(output_dir, output_filename)
+        output_path = os.path.join('output', output_filename)
+        
+        # 创建输出目录
+        os.makedirs('output', exist_ok=True)
         
         # 保存翻译后的内容
         self.writer.save_translated_book(self.book, output_path, 'pdf')
         LOG.info(f"翻译后的文件已保存到: {output_path}")
+        
+        # 返回输出文件路径
+        return output_path

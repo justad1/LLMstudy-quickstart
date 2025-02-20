@@ -58,7 +58,7 @@ class Writer:
         LOG.info(f"开始翻译: {output_file_path}")
 
         # 注册中文字体（宋体）
-        font_path = "../fonts/simsun.ttc"  # 请将此路径替换为您的字体文件路径
+        font_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'fonts', 'simsun.ttc')
         pdfmetrics.registerFont(TTFont("SimSun", font_path))
 
         # 创建自定义段落样式，使用宋体

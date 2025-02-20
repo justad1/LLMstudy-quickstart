@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Translator - PDF翻译工具</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="/static/styles.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mx-auto px-4 py-12">
+        <div class="max-w-2xl mx-auto translator-card">
+            <div class="flex items-center justify-center mb-8">
+                <i class="ri-translate-2 text-4xl text-primary mr-3"></i>
+                <h1 class="text-3xl font-bold text-center text-gray-800">AI Translator</h1>
+            </div>
+            <h1 class="text-3xl font-bold text-center mb-8 text-gray-800">AI Translator</h1>
+            
+            <!-- 文件上传表单 -->
+            <form id="uploadForm" class="space-y-6">
+                <div class="space-y-4">
+                    <div class="file-upload-area group cursor-pointer" onclick="document.getElementById('fileInput').click()">
+                        <i class="ri-upload-cloud-2-line upload-icon text-4xl mb-3"></i>
+                        <p class="text-lg font-medium mb-2">拖拽PDF文件到这里</p>
+                        <p class="text-sm text-gray-500 mb-4">或点击选择文件</p>
+                        <input type="file" 
+                               name="file" 
+                               accept=".pdf"
+                               class="hidden"
+                               id="fileInput">
+                        <p id="selectedFileName" class="mt-3 text-sm text-gray-500"></p>
+                    </div>
+                    </label>
+
+                    <div class="mt-6">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">选择翻译模型</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <label class="model-option relative flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:border-primary transition-colors">
+                                <input type="radio" name="model" value="gpt" class="hidden" checked>
+                                <div class="text-center">
+                                    <i class="ri-openai-fill text-2xl mb-2 text-green-600"></i>
+                                    <div class="font-medium">GPT-4</div>
+                                </div>
+                            </label>
+                            <label class="model-option relative flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:border-primary transition-colors">
+                                <input type="radio" name="model" value="glm" class="hidden">
+                                <div class="text-center">
+                                    <i class="ri-robot-2-fill text-2xl mb-2 text-blue-600"></i>
+                                    <div class="font-medium">ChatGLM4</div>
+                                </div>
+                            </label>
+                            <label class="model-option relative flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:border-primary transition-colors">
+                                <input type="radio" name="model" value="deepseek" class="hidden">
+                                <div class="text-center">
+                                    <i class="ri-brain-fill text-2xl mb-2 text-purple-600"></i>
+                                    <div class="font-medium">Deepseek</div>
+                                </div>
+                            </label>
+                            <label class="model-option relative flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:border-primary transition-colors">
+                                <input type="radio" name="model" value="qwen" class="hidden">
+                                <div class="text-center">
+                                    <i class="ri-ai-fill text-2xl mb-2 text-yellow-600"></i>
+                                    <div class="font-medium">Qwen-plus</div>
+                                </div>
+                            </label>
+                            <label class="model-option relative flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:border-primary transition-colors">
+                                <input type="radio" name="model" value="kimi" class="hidden">
+                                <div class="text-center">
+                                    <i class="ri-rocket-fill text-2xl mb-2 text-red-600"></i>
+                                    <div class="font-medium">Kimi</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-primary w-full flex items-center justify-center mt-8">
+                    <i class="ri-translate-2 mr-2"></i>
+                    开始翻译
+                </button>
+            </form>
+
+            <!-- 进度条 -->
+            <div id="progressContainer" class="mt-8 hidden space-y-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center">
+                        <i id="loadingIcon" class="ri-loader-4-line animate-spin mr-2 text-primary"></i>
+                        <span class="font-medium">正在翻译</span>
+                    </div>
+                    <span id="progressPercent" class="text-sm font-medium">0%</span>
+                </div>
+                <div class="progress-container">
+                    <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+                </div>
+            </div>
+
+            <!-- 结果区域 -->
+            <div id="result" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-green-50/50 border border-green-200 text-center">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="ri-check-line text-2xl text-green-500 mr-2"></i>
+                        <p class="text-lg font-medium text-green-700">翻译完成！</p>
+                    </div>
+                    <a id="downloadLink" 
+                       href="#" 
+                       class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+                        <i class="ri-download-line mr-2"></i>
+                        下载翻译结果
+                    </a>
+                </div>
+            </div>
+
+            <!-- 错误提示 -->
+            <div id="error" class="mt-8 hidden">
+                <div class="p-6 rounded-xl bg-red-50/50 border border-red-200">
+                    <div class="flex items-center mb-2">
+                        <i class="ri-error-warning-line text-2xl text-red-500 mr-2"></i>
+                        <p class="font-medium text-red-700">出错了</p>
+                    </div>
+                    <p id="errorText" class="text-red-600 text-sm"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('uploadForm');
+            const fileInput = document.getElementById('fileInput');
+            const fileNameDisplay = document.getElementById('selectedFileName');
+            const progressContainer = document.getElementById('progressContainer');
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('progressText');
+            const progressPercent = document.getElementById('progressPercent');
+            const result = document.getElementById('result');
+            const error = document.getElementById('error');
+            const errorText = document.getElementById('errorText');
+            const downloadLink = document.getElementById('downloadLink');
+            const dropArea = document.querySelector('.file-upload-area');
+
+            // 文件拖放相关事件
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight() {
+                dropArea.classList.add('border-primary');
+            }
+
+            function unhighlight() {
+                dropArea.classList.remove('border-primary');
+            }
+
+            dropArea.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const file = dt.files[0];
+                handleFile(file);
+            }
+
+            // 处理文件选择
+            fileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                handleFile(file);
+            });
+
+            function handleFile(file) {
+                if (file) {
+                    if (file.type === 'application/pdf') {
+                        fileNameDisplay.textContent = file.name;
+                        fileNameDisplay.classList.remove('text-red-500');
+                        // 创建新的 DataTransfer 对象
+                        const dataTransfer = new DataTransfer();
+                        dataTransfer.items.add(file);
+                        // 更新 fileInput 的文件
+                        fileInput.files = dataTransfer.files;
+                    } else {
+                        fileNameDisplay.textContent = '请选择 PDF 文件';
+                        fileNameDisplay.classList.add('text-red-500');
+                        fileInput.value = '';
+                    }
+                }
+            }
+
+            // 处理表单提交
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // 重置UI状态
+                progressContainer.classList.remove('hidden');
+                result.classList.add('hidden');
+                error.classList.add('hidden');
+                
+                const formData = new FormData(form);
+                
+                try {
+                    // 开始SSE连接来监听进度
+                    const eventSource = new EventSource('/progress');
+                    
+                    eventSource.onmessage = function(event) {
+                        const data = JSON.parse(event.data);
+                        const percent = (data.current / data.total * 100).toFixed(1);
+                        
+                        progressBar.style.width = `${percent}%`;
+                        progressPercent.textContent = `${percent}%`;
+                        
+                        if (data.status === 'completed') {
+                            eventSource.close();
+                            document.getElementById('loadingIcon').style.display = 'none';
+                        }
+                    };
+                    
+                    // 发送翻译请求
+                    const response = await fetch('/translate', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        result.classList.remove('hidden');
+                        downloadLink.href = `/download/${data.output_filename}`;
+                    } else {
+                        throw new Error(data.error || '翻译失败');
+                    }
+                } catch (err) {
+                    error.classList.remove('hidden');
+                    errorText.textContent = err.message;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
